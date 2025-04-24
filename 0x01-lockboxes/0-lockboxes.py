@@ -3,6 +3,7 @@
 Determine if all locked boxes can be opened.
 """
 
+
 def canUnlockAll(boxes):
     """
     This function determines if all boxes can be opened
