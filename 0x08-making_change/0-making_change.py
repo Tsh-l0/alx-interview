@@ -19,24 +19,17 @@ def makeChange(coins, total):
             Returns -1 if total cannot be met by any number of coins
             Returns 0 if total is 0 or less
     """
+    if not coins or coins is None:
+        return -1
     if total <= 0:
         return 0
 
-    if not coins or len(coins) == 0:
-        return -1
-
-    # Remove invalid coins
-    valid_coins = list(set([coin for coin in coins if coin > 0]))
-
-    if not valid_coins:
-        return -1
-
-    # Dynamic programming approach
     dp = [float('inf')] * (total + 1)
     dp[0] = 0
 
+    # Fill the dp array for each amount from 1 to total
     for amount in range(1, total + 1):
-        for coin in valid_coins:
+        for coin in coins:
             if coin <= amount and dp[amount - coin] != float('inf'):
                 dp[amount] = min(dp[amount], dp[amount - coin] + 1)
 
