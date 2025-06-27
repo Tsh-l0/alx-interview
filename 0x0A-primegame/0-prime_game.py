@@ -5,40 +5,58 @@ Choosing primes and removing them and their multiples
 
 
 def isWinner(x, nums):
-    if not nums or x < 1:
+    """
+    Determines the winner of each round of the Prime Game
+
+    Args:
+        x (int): The number of rounds.
+        nums (list of int): A list of integers where each integer n denotes
+        a set of consecutive integers starting from 1 up to and including n.
+
+    Returns:
+        str: The name of the player who won the most rounds (either "Ben"
+        or "Maria").
+        None: If there is no winner
+
+    Raises:
+        None
+    """
+    # Check for invalid input
+    if x <= 0 or nums is None:
+        return None
+    if x != len(nums):
         return None
 
-    max_n = max(nums)
+    # Initialize scores and array of prime nums
+    ben = 0
+    maria = 0
+    a = [1 for x in range(sorted(nums)[-1] + 1)]
+    a[0], a[1] = 0, 0
 
-    # Count primes until max_n
-    is_prime = [True for _ in range(max_n + 1)]
-    is_prime[0] = is_prime[1] = False
+    for i in range(2, len(a)):
+        rm_multiples(a, i)
 
-    for i in range(2, int(max_n**0.5) + 1):
-        if is_prime[i]:
-            for j in range(i*i, max_n + 1, i):
-                is_prime[j] = False
-
-    # prime_counts[i] = number of primes ≤ i
-    prime_counts = [0] * (max_n + 1)
-    count = 0
-    for i in range(1, max_n + 1):
-        if is_prime[i]:
-            count += 1
-        prime_counts[i] = count
-
-    maria_wins = 0
-    ben_wins = 0
-
-    for n in nums:
-        if prime_counts[n] % 2 == 1:
-            maria_wins += 1
+    for i in nums:
+        if sum(a[0:i + 1]) % 2 == 0:
+            ben += 1
         else:
-            ben_wins += 1
+            maria += 1
 
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
+    # Determine the winner of the game
+    if ben > maria:
         return "Ben"
-    else:
-        return None
+    if maria > ben:
+        return "Maria"
+    return None
+
+
+def rm_multiples(ls, x):
+    """
+    Removes multiples of a prime number from an array of possible prime
+    numbers
+    """
+    for i in range(2, len(ls)):
+        try:
+            ls[i * x] = 0
+        except (ValueError, IndexError):
+            break
